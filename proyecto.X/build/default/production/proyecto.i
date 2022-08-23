@@ -2626,7 +2626,7 @@ DIS1:
     BCF DIS, 0
 VERIFICACION:
     MOVF cont10ms, W
-    SUBLW 10
+    SUBLW 5
     BTFSS STATUS, 2 ; verificamos bandera z
     GOTO VERIFICACION
     CLRF cont10ms
