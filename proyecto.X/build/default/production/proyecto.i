@@ -2493,6 +2493,8 @@ PSECT udata_bank0
     DS 1
  DIS:
     DS 1
+ CONTADOR:
+    DS 2
 
  estado:
     DS 1
@@ -2586,9 +2588,9 @@ MAIN:
     BSF INTCON, 7 ; Se habilitan todas las interrupciones por el ((INTCON) and 07Fh), 7
 
 LOOP:
-    INCF PORTC, F ; Incrementamos el Puerto B
+    INCF CONTADOR, F ; Incrementamos el Puerto B
 
-    MOVF PORTC, W
+    MOVF CONTADOR, W
     MOVWF NL
     MOVWF NH
 
