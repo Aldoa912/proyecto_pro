@@ -139,7 +139,6 @@ MAIN:
     BSF INTCON, 7	; Se habilitan todas las interrupciones por el GIE
     
 LOOP:
-    INCF CONTADOR, F	; Incrementamos el Puerto B
     
     MOVF CONTADOR, W
     MOVWF NL
@@ -152,38 +151,55 @@ LOOP:
     ANDWF NH, F
     SWAPF NH, F
     
-    BTFSS DIS, 0
     GOTO DIS0
-    GOTO DIS1
+
     
 DIS0:
     BSF TRISA, 0
     BCF TRISA, 1
-    
     MOVF NL, W
     PAGESEL TABLA
     CALL TABLA
     PAGESEL DIS0
     MOVWF PORTD
-    BSF DIS, 0
     GOTO VERIFICACION
 DIS1:
     BCF TRISA, 0
     BSF TRISA, 1
-    
+    INCF NH
     MOVF NH, W
     PAGESEL TABLA
     CALL TABLA
     PAGESEL DIS1
-    MOVWF PORTD    
-    BCF DIS, 0
+    MOVWF PORTD 
+    GOTO VERIFICACION2
+    
 VERIFICACION:    
     MOVF cont10ms, W
     SUBLW 5
     BTFSS STATUS, 2	; verificamos bandera z
     GOTO VERIFICACION
     CLRF cont10ms
-    GOTO LOOP		; Regresamos a la etiqueta LOOP  
+    INCF NL
+    MOVF NL, W
+    SUBLW  10
+    BTFSS STATUS, 2
+    GOTO DIS0
+    CLRF NL
+    GOTO DIS1		; Regresamos a la etiqueta LOOP  
+    
+VERIFICACION2:    
+    MOVF cont10ms, W
+    SUBLW 5
+    BTFSS STATUS, 2	; verificamos bandera z
+    GOTO VERIFICACION2
+    CLRF cont10ms
+    MOVF NH, W
+    SUBLW  5
+    BTFSS STATUS, 2
+    GOTO DIS0
+    CLRF NH
+    GOTO DIS0		; Regresamos a la etiqueta LOOP 
     
     
 PSECT CODE, ABS, DELTA=2

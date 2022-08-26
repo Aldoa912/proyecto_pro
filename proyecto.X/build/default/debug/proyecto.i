@@ -2621,7 +2621,7 @@ DIS1:
     CALL TABLA
     PAGESEL DIS1
     MOVWF PORTD
-    GOTO VERIFICACION2
+    GOTO VERIFICACION
 
 VERIFICACION:
     MOVF cont10ms, W
@@ -2633,22 +2633,9 @@ VERIFICACION:
     MOVF NL, W
     SUBLW 10
     BTFSS STATUS, 2
-    GOTO DIS0
+    GOTO LOOP
     CLRF NL
     GOTO DIS1 ; Regresamos a la etiqueta LOOP
-
-VERIFICACION2:
-    MOVF cont10ms, W
-    SUBLW 5
-    BTFSS STATUS, 2 ; verificamos bandera z
-    GOTO VERIFICACION2
-    CLRF cont10ms
-    MOVF NH, W
-    SUBLW 5
-    BTFSS STATUS, 2
-    GOTO DIS0
-    CLRF NH
-    GOTO DIS0 ; Regresamos a la etiqueta LOOP
 
 
 PSECT CODE, ABS, DELTA=2
