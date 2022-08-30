@@ -2520,11 +2520,24 @@ PSECT CODE, delta=2, abs
     BTFSS INTCON,2 ; ((INTCON) and 07Fh), 2 = 1 ?
     GOTO POP
     BCF INTCON,2 ; Borramos bandera ((INTCON) and 07Fh), 2
-
     MOVLW 100
     MOVWF TMR0 ; CARGAMOS EL VALOR DE N = DESBORDE 50mS
-
     INCF cont10ms, F
+ISRTMR1:
+    BTFSS PIR1, 0 ; ((PIR1) and 07Fh), 0 = 1?
+    GOTO ISRRBIF
+    BCF PIR1, 0 ; Borramos la bandera del ((PIR1) and 07Fh), 0
+
+    MOVLW 0x8F
+    MOVWF TMR1L
+    MOVLW 0xFD
+    MOVWF TMR1H
+
+    BTFSS estado, 1 ; Y = 1?
+    GOTO ISRRBIF
+ISRRBIF:
+    BTFSS INTCON, 0 ; ((INTCON) and 07Fh), 0 = 1 ?
+    GOTO POP
 
  POP:
     SWAPF STATUS_TEMP, W
@@ -2553,13 +2566,24 @@ MAIN:
     BANKSEL TRISC
     CLRF TRISC ; Limpiar el registro TRISB
     CLRF TRISD ; Puerto para el display 7 segmentos
-    BCF TRISA, 0 ; Transistores
-    BCF TRISA, 1
-
+    CLRF TRISA
+    BSF TRISB, 0
+    BSF TRISB, 1 ; Entradas para los botones
+    BSF TRISB, 2
+    BSF TRISB, 3 ; Entradas para los botones
 
     BANKSEL ANSEL
     CLRF ANSEL
     CLRF ANSELH
+
+    BANKSEL IOCB
+
+    BSF IOCB, 0
+    BSF IOCB, 1 ; Habilitando ((PORTB) and 07Fh), 0 y ((PORTB) and 07Fh), 1 para las ISR de ((INTCON) and 07Fh), 3
+
+    BANKSEL WPUB
+    BSF WPUB, 0
+    BSF WPUB, 1 ; Habilitando los Pullups en ((PORTB) and 07Fh), 0 y ((PORTB) and 07Fh), 1
 
     ; ConfiguraciÃ³n TMR0
     BANKSEL OPTION_REG
@@ -2570,6 +2594,17 @@ MAIN:
     BCF OPTION_REG, 1
     BSF OPTION_REG, 0 ; ((OPTION_REG) and 07Fh), 2 -0: PRESCALER 1:4 SELECIONADO
 
+    BANKSEL T1CON
+    BSF T1CON, 5
+    BSF T1CON, 4 ; Prescaler de 1:8
+    BCF T1CON, 1 ; ((T1CON) and 07Fh), 1 Fosc/4 reloj interno
+    BSF T1CON, 0 ; ((T1CON) and 07Fh), 0 enable
+
+    BANKSEL TMR1L
+    MOVLW 0x8F
+    MOVWF TMR1L
+    MOVLW 0xFD
+    MOVWF TMR1H
 
     BANKSEL PORTC
     CLRF PORTC ; Se limpia el puerto B
@@ -2583,7 +2618,9 @@ MAIN:
     MOVLW 100
     MOVWF TMR0 ; CARGAMOS EL VALOR DE N = DESBORDE 50mS
     CLRF INTCON ; borrar banderas de interrupciÃ³n
-
+    BCF PIR1, 0
+    BSF PIE1, 0
+    BSF INTCON, 6
     BSF INTCON, 5 ; Se habilita la interrupciÃ³n del TMR0 - ((INTCON) and 07Fh), 5
     BSF INTCON, 7 ; Se habilitan todas las interrupciones por el ((INTCON) and 07Fh), 7
 
@@ -2615,7 +2652,7 @@ DIS0:
     GOTO VERIFICACION2 ; VAMOS A VERIFICACION2
 VERIFICACION:
     MOVF cont10ms, W
-    SUBLW 5
+    SUBLW 100
     BTFSS STATUS, 2 ; verificamos bandera z
     GOTO VERIFICACION ; REGRESAMOS A VERIFICACION HASTA QUE LA RESTA DE 0
     CLRF cont10ms ; LIMPIAMOS EL CONT20MS
