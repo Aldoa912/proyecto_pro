@@ -45,8 +45,7 @@ PSECT udata_bank0
  DIS:
     DS 1
  CONTADOR:
-    DS 2
-    
+    DS 2 
  estado:
     DS 1
  W_TEMP:
