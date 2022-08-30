@@ -2495,10 +2495,14 @@ PSECT udata_bank0
     DS 1
  ML:
     DS 1
+ HL:
+    DS 1
+ HH:
+    DS 1
  DIS:
     DS 1
  CONTADOR:
-    DS 2
+    DS 3
  CONT_DIS:
     DS 1
  estado:
@@ -2710,19 +2714,21 @@ SETCONTADOR:
     MOVWF NH
     MOVWF ML
     MOVWF MH
+    MOVFW HL
+    MOVFW HH
 
 
-    MOVLW 0x000F
+    MOVLW 0x00000F
     ANDWF NL, F
 
-    MOVLW 0x00F0
+    MOVLW 0x0000F0
     ANDWF NH, F
     SWAPF NH, F
 
-    MOVLW 0x0F00
+    MOVLW 0x000F00
     ANDWF ML, F
 
-    MOVLW 0xF000
+    MOVLW 0x00F000
     ANDWF MH, F
     SWAPF MH, F
 LOOP:

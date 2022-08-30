@@ -46,7 +46,13 @@ PSECT udata_bank0
     DS 1
  ML:
     DS 1
+ HL:
+    DS 1
+ HH:
+    DS 1
  DIS:
+    DS 1
+ CONTADORH:
     DS 1
  CONTADOR:
     DS 2 
@@ -261,8 +267,7 @@ SETCONTADOR:
     MOVWF NH
     MOVWF ML
     MOVWF MH
-    
-    
+
     MOVLW 0x000F
     ANDWF NL, F
     
@@ -276,6 +281,8 @@ SETCONTADOR:
     MOVLW 0xF000
     ANDWF MH, F
     SWAPF MH, F
+    
+    
 LOOP:
     GOTO VERIFICACION2
 
