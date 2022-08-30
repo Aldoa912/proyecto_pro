@@ -10,13 +10,13 @@
  Intel Hex-file ranges:
   0h - 1h		(dist/default/production\proyecto.X.production.hex)
   8h - B7h		(dist/default/production\proyecto.X.production.hex)
-  200h - 307h		(dist/default/production\proyecto.X.production.hex)
+  200h - 315h		(dist/default/production\proyecto.X.production.hex)
   3000h - 3021h		(dist/default/production\proyecto.X.production.hex)
   400Eh - 4011h		(dist/default/production\proyecto.X.production.hex)
  Unused ranges:
   2h - 7h
   B8h - 1FFh
-  308h - 2FFFh
+  316h - 2FFFh
   3022h - 400Dh
 
 ### Hex Memory Map ###
@@ -55,7 +55,8 @@
 000002D0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
 000002E0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
 000002F0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
-00000300 | H1 H1 H1 H1 H1 H1 H1 H1 -- -- -- -- -- -- -- --
+00000300 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+00000310 | H1 H1 H1 H1 H1 H1 -- -- -- -- -- -- -- -- -- --
 ----------------------------------------------------------
 00003000 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
 00003010 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
