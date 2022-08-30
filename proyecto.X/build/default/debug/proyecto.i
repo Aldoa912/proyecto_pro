@@ -2456,7 +2456,8 @@ stk_offset SET 0
 auto_size SET 0
 ENDM
 # 7 "C:\\Program Files\\Microchip\\xc8\\v2.40\\pic\\include\\xc.inc" 2 3
-# 11 "proyecto.s" 2
+# 10 "proyecto.s" 2
+
 ;*******************************************************************************
 ; Palabra de configuraciÃ³n
 ;*******************************************************************************
@@ -2525,7 +2526,7 @@ PSECT CODE, delta=2, abs
     MOVLW 100
     MOVWF TMR0 ; CARGAMOS EL VALOR DE N = DESBORDE 50mS
     INCF cont10ms, F
-    GOTO POP
+; GOTO POP
 ISRTMR1:
     BTFSS PIR1, 0 ; ((PIR1) and 07Fh), 0 = 1?
     GOTO ISRRBIF
@@ -2535,10 +2536,10 @@ ISRTMR1:
     MOVWF TMR1L
     MOVLW 0xFD
     MOVWF TMR1H
-    GOTO DIS1
+    GOTO DIS0
 
 DIS0:
-    MOVF CONTADOR, W
+    MOVF CONT_DIS, W
     SUBLW 0 ; REALIZAMOS UNA COMPARACION DEL VALOR DE CONTADOR
        ; SI ESTA ES 0 SEGUIMOS EN ESTA SUBRUTINA, SINO
        ; PASAMOS A ESTADO01_ISR
@@ -2551,6 +2552,7 @@ DIS0:
     CALL TABLA ; LLAMAMOS A LA TABLA
     PAGESEL DIS0
     MOVWF PORTD ; MOVEMOS LOS DATOS DE W AL PORTC
+    INCF CONT_DIS
     GOTO POP
 
 DIS1:
@@ -2562,6 +2564,7 @@ DIS1:
     CALL TABLA ; LLAMAMOS A LA TABLA
     PAGESEL DIS0
     MOVWF PORTD ; MOVEMOS LOS DATOS DE W AL PORTD
+    CLRF CONT_DIS
     GOTO POP
 
 ISRRBIF:
@@ -2644,6 +2647,7 @@ MAIN:
     CLRF NH
     CLRF DIS
     CLRF CONTADOR
+    CLRF CONT_DIS
 
     MOVLW 100
     MOVWF TMR0 ; CARGAMOS EL VALOR DE N = DESBORDE 50mS
