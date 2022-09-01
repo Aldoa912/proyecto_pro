@@ -90,6 +90,8 @@ PSECT CODE, delta=2, abs
     SWAPF STATUS, W
     MOVWF STATUS_TEMP
  ISR:
+    BANKSEL INTCON
+    BCF INTCON, 0
     BTFSS INTCON,2	   ; T0IF = 1 ?
     GOTO ISRTMR1
     BCF INTCON,2	    ; Borramos bandera T0IF 
@@ -98,10 +100,11 @@ PSECT CODE, delta=2, abs
     INCF cont10ms, F
     ;GOTO POP
 ISRTMR1:
+    BANKSEL INTCON
+    BCF INTCON, 0
     BTFSS PIR1, 0	    ; TMR1IF = 1?
     GOTO ISRRBIF
     BCF PIR1, 0		    ; Borramos la bandera del TMR1IF
-    
     MOVLW 0x8F
     MOVWF TMR1L
     MOVLW 0xFD
@@ -167,7 +170,7 @@ DIS2:
     PAGESEL DIS0
     MOVWF PORTD		; MOVEMOS LOS DATOS DE W AL PORTD
     INCF CONT_DIS
-    GOTO POP 
+    GOTO POP
 DIS3:
     MOVF CONT_DIS, W
     SUBLW 3		    ; REALIZAMOS UNA COMPARACION DEL VALOR DE CONTADOR
@@ -187,7 +190,7 @@ DIS3:
     PAGESEL DIS0
     MOVWF PORTD		; MOVEMOS LOS DATOS DE W AL PORTD
     INCF CONT_DIS
-    GOTO POP 
+    GOTO POP
     
 DIS4:
     MOVF CONT_DIS, W
@@ -208,7 +211,7 @@ DIS4:
     PAGESEL DIS0
     MOVWF PORTD		; MOVEMOS LOS DATOS DE W AL PORTD
     INCF CONT_DIS
-    GOTO POP 
+    GOTO POP
     
 DIS5:
 
@@ -224,11 +227,12 @@ DIS5:
     PAGESEL DIS0
     MOVWF PORTD		; MOVEMOS LOS DATOS DE W AL PORTD
     CLRF CONT_DIS
-    GOTO POP 
+    GOTO POP
     
 ISRRBIF:
     BTFSS INTCON, 0	    ; RBIF = 1 ?
     GOTO POP
+    BCF INTCON, 0
 
  POP:
     SWAPF STATUS_TEMP, W
@@ -272,19 +276,26 @@ MAIN:
     
     BSF IOCB, 0
     BSF IOCB, 1		; Habilitando RB0 y RB1 para las ISR de RBIE
+    BSF IOCB, 2
+    BSF IOCB, 3
     
     BANKSEL WPUB
     BSF WPUB, 0
     BSF WPUB, 1		; Habilitando los Pullups en RB0 y RB1
+    BSF WPUB, 2		; Habilitando los Pullups en RB0 y RB1
+    BSF WPUB, 3		; Habilitando los Pullups en RB0 y RB1
+    
 
     ; ConfiguraciÃ³n TMR0
     BANKSEL OPTION_REG
+    BCF OPTION_REG, 7
     BCF OPTION_REG, 5	; T0CS: FOSC/4 COMO RELOJ (MODO TEMPORIZADOR)
     BCF OPTION_REG, 3	; PSA: ASIGNAMOS EL PRESCALER AL TMR0
     
     BCF OPTION_REG, 2
     BCF OPTION_REG, 1
     BSF OPTION_REG, 0	; PS2-0: PRESCALER 1:4 SELECIONADO 
+    
     
     BANKSEL T1CON
     BSF T1CON, 5
@@ -320,6 +331,8 @@ MAIN:
     BSF INTCON, 6
     BSF INTCON, 5	; Se habilita la interrupciÃ³n del TMR0 - T0IE
     BSF INTCON, 7	; Se habilitan todas las interrupciones por el GIE
+    BSF INTCON, 3
+    BCF INTCON, 2
     
 SETCONTADOR:
     
