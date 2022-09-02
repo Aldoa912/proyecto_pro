@@ -90,8 +90,7 @@ PSECT CODE, delta=2, abs
     SWAPF STATUS, W
     MOVWF STATUS_TEMP
  ISR:
-    BANKSEL INTCON
-    BCF INTCON, 0
+    ;BCF INTCON, 0
     BTFSS INTCON,2	   ; T0IF = 1 ?
     GOTO ISRTMR1
     BCF INTCON,2	    ; Borramos bandera T0IF 
@@ -100,8 +99,8 @@ PSECT CODE, delta=2, abs
     INCF cont10ms, F
     ;GOTO POP
 ISRTMR1:
-    BANKSEL INTCON
-    BCF INTCON, 0
+    ;BANKSEL INTCON
+    ;BCF INTCON, 0
     BTFSS PIR1, 0	    ; TMR1IF = 1?
     GOTO ISRRBIF
     BCF PIR1, 0		    ; Borramos la bandera del TMR1IF
@@ -109,6 +108,8 @@ ISRTMR1:
     MOVWF TMR1L
     MOVLW 0xFD
     MOVWF TMR1H
+    
+    ´
     GOTO DIS0
     
 DIS0:
@@ -233,7 +234,7 @@ ISRRBIF:
     BTFSS INTCON, 0	    ; RBIF = 1 ?
     GOTO POP
     BCF INTCON, 0
-
+    
  POP:
     SWAPF STATUS_TEMP, W
     MOVWF STATUS
@@ -262,7 +263,7 @@ MAIN:
     CLRF TRISC		; Limpiar el registro TRISB
     CLRF TRISD		; Puerto para el display 7 segmentos
     CLRF TRISA
-    
+    CLRF TRISB
     BSF TRISB, 0
     BSF TRISB, 1	; Entradas para los botones
     BSF TRISB, 2
@@ -289,6 +290,7 @@ MAIN:
     ; ConfiguraciÃ³n TMR0
     BANKSEL OPTION_REG
     BCF OPTION_REG, 7
+    
     BCF OPTION_REG, 5	; T0CS: FOSC/4 COMO RELOJ (MODO TEMPORIZADOR)
     BCF OPTION_REG, 3	; PSA: ASIGNAMOS EL PRESCALER AL TMR0
     
@@ -312,6 +314,7 @@ MAIN:
     BANKSEL PORTC
     CLRF PORTC		; Se limpia el puerto B
     CLRF PORTA
+    CLRF PORTB
     CLRF cont10ms	; Se limpia la variable cont50ms
     CLRF NL
     CLRF NH
@@ -333,6 +336,7 @@ MAIN:
     BSF INTCON, 7	; Se habilitan todas las interrupciones por el GIE
     BSF INTCON, 3
     BCF INTCON, 2
+    BCF INTCON, 0
     
 SETCONTADOR:
     
@@ -346,24 +350,24 @@ SETCONTADOR:
     MOVWF HL
     MOVWF HH
 
-    MOVLW 0x00000F
+    MOVLW 0x0F
     ANDWF NL, F
     
-    MOVLW 0x0000F0
+    MOVLW 0xF0
     ANDWF NH, F
     SWAPF NH, F
     
-    MOVLW 0x000F00
+    MOVLW 0x0F
     ANDWF ML, F
     
-    MOVLW 0x00F000
+    MOVLW 0xF0
     ANDWF MH, F
     SWAPF MH, F
 
-    MOVLW 0x0F0000
+    MOVLW 0x0F
     ANDWF HL, F
     
-    MOVLW 0xF00000
+    MOVLW 0xF0
     ANDWF HH, F
     SWAPF HH, F
 ;******************************************************************************* 
@@ -377,17 +381,17 @@ SETCONTADOR:
     MOVWF AL
     MOVWF AH
 
-    MOVLW 0x000F
+    MOVLW 0x0F
     ANDWF DL, F
     
-    MOVLW 0x00F0
+    MOVLW 0xF0
     ANDWF DH, F
     SWAPF DH, F
     
-    MOVLW 0x0F00
+    MOVLW 0x0F
     ANDWF AL, F
     
-    MOVLW 0xF000
+    MOVLW 0xF0
     ANDWF AH, F
     SWAPF AH, F
     
