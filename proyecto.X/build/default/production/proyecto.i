@@ -2546,7 +2546,7 @@ PSECT CODE, delta=2, abs
     BTFSS INTCON,2 ; ((INTCON) and 07Fh), 2 = 1 ?
     GOTO ISRTMR1
     BCF INTCON,2 ; Borramos bandera ((INTCON) and 07Fh), 2
-    MOVLW 100
+    MOVLW 178
     MOVWF TMR0 ; CARGAMOS EL VALOR DE N = DESBORDE 50mS
     INCF CONT_DIS, F
     ;GOTO ISRRBIF
@@ -2587,9 +2587,9 @@ PSECT CODE, delta=2, abs
 MAIN:
     BANKSEL OSCCON
 
-    BCF OSCCON, 6 ; ((OSCCON) and 07Fh), 6 SelecciÃ³n de 250 kHz
-    BSF OSCCON, 5 ; ((OSCCON) and 07Fh), 5
-    BCF OSCCON, 4 ; ((OSCCON) and 07Fh), 4
+    BSF OSCCON, 6 ; ((OSCCON) and 07Fh), 6 SelecciÃ³n de 250 kHz
+    BCF OSCCON, 5 ; ((OSCCON) and 07Fh), 5
+    BSF OSCCON, 4 ; ((OSCCON) and 07Fh), 4
 
     bsf OSCCON, 0 ; ((OSCCON) and 07Fh), 0 Reloj Interno
 
@@ -2628,9 +2628,9 @@ MAIN:
     BCF OPTION_REG, 5 ; ((OPTION_REG) and 07Fh), 5: FOSC/4 COMO RELOJ (MODO TEMPORIZADOR)
     BCF OPTION_REG, 3 ; ((OPTION_REG) and 07Fh), 3: ASIGNAMOS EL PRESCALER AL TMR0
 
-    BCF OPTION_REG, 2
-    BCF OPTION_REG, 1
-    BSF OPTION_REG, 0 ; ((OPTION_REG) and 07Fh), 2 -0: PRESCALER 1:4 SELECIONADO
+    BSF OPTION_REG, 2
+    BSF OPTION_REG, 1
+    BCF OPTION_REG, 0 ; ((OPTION_REG) and 07Fh), 2 -0: PRESCALER 1:4 SELECIONADO
 
 
     BANKSEL T1CON
@@ -2660,12 +2660,12 @@ MAIN:
     CLRF CONTADOR
     CLRF CONT_DIS
 
-    MOVLW 100
+    MOVLW 178
     MOVWF TMR0 ; CARGAMOS EL VALOR DE N = DESBORDE 50mS
     CLRF INTCON ; borrar banderas de interrupciÃ³n
     BCF PIR1, 0
     BSF PIE1, 0
-    BSF INTCON, 6
+
     BSF INTCON, 5 ; Se habilita la interrupciÃ³n del TMR0 - ((INTCON) and 07Fh), 5
     BSF INTCON, 7 ; Se habilitan todas las interrupciones por el ((INTCON) and 07Fh), 7
     BSF INTCON, 3
